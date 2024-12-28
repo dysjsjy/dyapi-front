@@ -34,6 +34,12 @@ export default [
     component: './Welcome',
   },
   {
+    path: '/interface/list',
+    name: '接口广场',
+    icon: 'RedditOutlined',
+    component: './InterfaceSquare',
+  },
+  {
     path: '/admin',
     name: 'admin',
     icon: 'crown',
