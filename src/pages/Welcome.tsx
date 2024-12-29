@@ -1,7 +1,10 @@
 import { PageContainer } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import { Card, theme } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+import { getUserByInvitationCodeUsingPOST } from '@/services/qiApi-backend/userController';
+import { useParams } from '@@/exports';
 
 /**
  * 每个单独的卡片，为了复用样式抽成了组件
@@ -86,6 +89,32 @@ const InfoCard: React.FC<{
 const Welcome: React.FC = () => {
   const { token } = theme.useToken();
   const { initialState } = useModel('@@initialState');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [ open, setOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [ data, setData] = useState<API.UserVO>();
+  const params = useParams();
+  const getUserByInvitationCode = async () => {
+    const res = await getUserByInvitationCodeUsingPOST({
+      invitationCode: params.id
+    });
+    if (res.code === 0 && res.data) {
+      if (initialState?.loginUser && initialState?.loginUser.invitationCode === params.id) {
+        return;
+      }
+      if (!initialState?.loginUser) {
+        setOpen(true);
+        setData(res.data);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (params.id) {
+      getUserByInvitationCode()
+    }
+  }, [])
+
   return (
     <PageContainer>
       <Card
@@ -114,7 +143,7 @@ const Welcome: React.FC = () => {
               color: token.colorTextHeading,
             }}
           >
-            欢迎使用 Ant Design Pro
+            欢迎使用 dyapi
           </div>
           <p
             style={{

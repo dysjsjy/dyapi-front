@@ -24,7 +24,7 @@ export default [
         name: 'register',
         path: '/user/register',
         component: './User/Register',
-      }
+      },
     ],
   },
   {
@@ -62,10 +62,7 @@ export default [
     path: '/list',
     component: './TableList',
   },
-  {
-    path: '/',
-    redirect: '/welcome',
-  },
+  { path: '/', name: '欢迎', icon: 'smile', component: './Welcome' },
   {
     path: '*',
     layout: false,
