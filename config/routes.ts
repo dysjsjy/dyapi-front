@@ -63,6 +63,13 @@ export default [
     component: './TableList',
   },
   {
+    path: '/account/center',
+    name: '个人中心',
+    icon: 'UserOutlined',
+    component: './User/UserInfo',
+    hideInMenu: true,
+  },
+  {
     path: '/interface_info/:id',
     name: '接口详情',
     component: './InterfaceInfo',
