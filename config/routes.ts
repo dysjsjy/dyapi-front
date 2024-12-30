@@ -62,7 +62,12 @@ export default [
     path: '/list',
     component: './TableList',
   },
-  { path: '/', name: '欢迎', icon: 'smile', component: './Welcome' },
+  {
+    path: '/interface_info/:id',
+    name: '接口详情',
+    component: './InterfaceInfo',
+    hideInMenu: true,
+  },
   {
     path: '*',
     layout: false,

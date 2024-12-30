@@ -12,9 +12,11 @@ import {
   LoginOutlined,
   VerticalAlignBottomOutlined,
 } from '@ant-design/icons';
-import { Column } from 'rc-table';
+// import { Column } from 'rc-table';
+import Column from 'antd/es/table/Column';
 import './index.less';
-import ProCard from '@ant-design/pro-card';
+// import ProCard from '@ant-design/pro-card';
+import { ProCard } from '@ant-design/pro-components';
 import { errorCode } from '@/enum/ErrorCodeEnum';
 import { history, Link, useModel, useParams } from '@@/exports';
 import {
@@ -32,7 +34,6 @@ import {
   sendRequestToGatewayUsingGet,
   sendRequestToGatewayUsingPost,
 } from '@/services/api/sendToGateway';
-import { currentUser } from '@/services/ant-design-pro/api';
 
 const InterfaceInfo: React.FC = () => {
   const { search, pathname } = window.location;
@@ -53,8 +54,7 @@ const InterfaceInfo: React.FC = () => {
   const [totalNum, settotalNum] = useState<number>(0);
   const [javaCode, setJavaCode] = useState<any>();
   const [returnCode, setReturnCode] = useState<any>(returnExample);
-  const docUrl =
-    process.env.NODE_ENV === 'production' ? 'https://doc.wangkeyao.com' : 'http://localhost:8080';
+  const docUrl = process.env.NODE_ENV === 'production' ? '#' : 'http://localhost:8080';
   const { initialState } = useModel('@@initialState');
   const { loginUser } = initialState || {};
 
@@ -243,7 +243,9 @@ const InterfaceInfo: React.FC = () => {
             {
               key: 'javascript',
               label: 'axios',
-              children: <CodeHighlighting codeString={axiosCode} language={requestExampleActiveTabKey} />,
+              children: (
+                <CodeHighlighting codeString={axiosCode} language={requestExampleActiveTabKey} />
+              ),
             },
           ]}
         />
@@ -252,7 +254,83 @@ const InterfaceInfo: React.FC = () => {
   };
 
   return (
-    <>
-    </>
-  )
+    <Spin spinning={loading}>
+      <Card title={data?.name}>
+        <Descriptions>
+          <Descriptions.Item key={'uri'} label={'接口地址'}>
+            <Paragraph copyable>{`${data?.protocol}://${data?.host}${data?.uri}`}</Paragraph>
+          </Descriptions.Item>
+          <Descriptions.Item key={'returnFormat'} label={'返回格式'}>
+            {data?.returnFormat ?? 'JSON'}
+          </Descriptions.Item>
+          <Descriptions.Item key={'reduceScore'} label={'消费积分'}>
+            {data?.reduceScore}个
+          </Descriptions.Item>
+          <Descriptions.Item key={'request'} label={'请求方式'}>
+            <Tag color={InterfaceRequestMethodEnum[data?.method ?? 'default']}>{data?.method}</Tag>
+          </Descriptions.Item>
+          <Descriptions.Item key={'totalNum'} label="调用总次数">
+            {totalNum}次
+          </Descriptions.Item>
+          <Descriptions.Item key={'status'} label={'接口状态'}>
+            {data && data.status === 0 ? (
+              <Badge status="default" text={statusEnum[data.status]} />
+            ) : null}
+            {data && data.status === 1 ? (
+              <Badge status="processing" text={statusEnum[data.status]} />
+            ) : null}
+            {data && data.status === 2 ? (
+              <Badge status="error" text={statusEnum[data.status]} />
+            ) : null}
+          </Descriptions.Item>
+          <Descriptions.Item key={'description'} label="接口描述">
+            {data?.description ?? '该接口暂无描述信息'}
+          </Descriptions.Item>
+          <Descriptions.Item key={'请求示例'} label="请求示例">
+            {data?.uri ? (
+              <Paragraph copyable={valueLength(data?.uri)}>{data?.uri}</Paragraph>
+            ) : (
+              '该接口暂无请求示例'
+            )}
+          </Descriptions.Item>
+        </Descriptions>
+      </Card>
+      <Card>
+        <p className="highlightLine">接口详细描述请前往开发者在线文档查看：</p>
+        <a href={`${docUrl}/pages/${data?.id}/#${data?.name}`} target={'_blank'} rel="noreferrer">
+          📘 接口在线文档：{data?.name}
+        </a>
+      </Card>
+      <br />
+      <Card
+        style={{ width: '100%' }}
+        tabList={responseExampleTabList}
+        activeTabKey={activeTabKey}
+        onTabChange={responseExampleTabChange}
+      >
+        {responseExampleContentList[activeTabKey]}
+      </Card>
+      <br />
+      {activeTabKey === 'sampleCode' && requestExampleActiveTabKey === 'javadoc' && (
+        <ProCard
+          type="inner"
+          title={<strong>开发者 SDK（快速接入API接口）</strong>}
+          bordered
+          extra={
+            <Link to="/account/center">
+              <LoginOutlined /> 前往获取开发者凭证
+            </Link>
+          }
+        >
+          <Button size={'large'}>
+            <a target={'_blank'} href={'#'} rel="noreferrer">
+              <VerticalAlignBottomOutlined /> Java SDK
+            </a>
+          </Button>
+        </ProCard>
+      )}
+    </Spin>
+  );
 };
+
+export default InterfaceInfo;
