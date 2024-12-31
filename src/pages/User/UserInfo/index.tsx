@@ -1,4 +1,4 @@
-import { history, useModel } from '@umijs/max';
+import { useModel } from '@umijs/max';
 import {
   Button,
   Descriptions,
@@ -27,7 +27,7 @@ import Settings from '../../../../config/defaultSettings';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import { ProCard } from '@ant-design/pro-components';
 import { errorConfig } from '@/requestErrorConfig';
-import SendGiftModal from '@/components/Gift/SendGift';
+// import SendGiftModal from '@/components/Gift/SendGift';
 import EmailModal from '@/components/EmailModal';
 
 export const valueLength = (val: any) => {
@@ -47,7 +47,7 @@ const UserInfo: React.FC = () => {
   const { loginUser } = initialState || {};
   const [previewOpen, setPreviewOpen] = useState(false);
   const [voucherLoading, setVoucherLoading] = useState<boolean>(false);
-  const [dailyCheckInLoading, setDailyCheckInLoading] = useState<boolean>(false);
+  // const [dailyCheckInLoading, setDailyCheckInLoading] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -442,13 +442,13 @@ const UserInfo: React.FC = () => {
           </Button>
         </ProCard>
       </ProCard>
-      <SendGiftModal
-        invitationCode={loginUser?.invitationCode}
-        onCancel={() => {
-          setOpen(false);
-        }}
-        open={open}
-      />
+      {/*<SendGiftModal*/}
+      {/*  invitationCode={loginUser?.invitationCode}*/}
+      {/*  onCancel={() => {*/}
+      {/*    setOpen(false);*/}
+      {/*  }}*/}
+      {/*  open={open}*/}
+      {/*/>*/}
       <EmailModal
         unbindSubmit={handleUnBindEmailSubmit}
         bindSubmit={handleBindEmailSubmit}
@@ -469,3 +469,5 @@ const UserInfo: React.FC = () => {
     </Spin>
   );
 };
+
+export default UserInfo;
