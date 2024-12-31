@@ -47,12 +47,13 @@ export default [
     routes: [
       {
         path: '/admin',
-        redirect: '/admin/sub-page',
+        redirect: '/admin/interface/list',
       },
       {
-        path: '/admin/sub-page',
-        name: 'sub-page',
-        component: './Admin',
+        name: '接口管理',
+        icon: 'ApiOutlined',
+        path: '/admin/interface/list',
+        component: './Admin/InterfaceInfoList',
       },
     ],
   },
