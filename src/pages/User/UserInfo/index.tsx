@@ -25,9 +25,8 @@ import {
 } from '@/services/qiApi-backend/userController';
 import Settings from '../../../../config/defaultSettings';
 import Paragraph from 'antd/lib/typography/Paragraph';
-import ProCard from '@ant-design/pro-card';
-import { requestConfig } from '@/requestConfig';
-import { doDailyCheckInUsingPOST } from '@/services/qiApi-backend/dailyCheckInController';
+import { ProCard } from '@ant-design/pro-components';
+import { errorConfig } from '@/requestErrorConfig';
 import SendGiftModal from '@/components/Gift/SendGift';
 import EmailModal from '@/components/EmailModal';
 
@@ -165,14 +164,14 @@ const UserInfo: React.FC = () => {
   const uploadButton = () => {
     return (
       <div>
-        <PlusOutlined/>
-        <div style={{marginTop: 8}}>Upload</div>
+        <PlusOutlined />
+        <div style={{ marginTop: 8 }}>Upload</div>
       </div>
     );
-  }
+  };
 
   const beforeUpload = async (file: RcFile) => {
-    const fileType = unloadFileTypeList.includes(file.type)
+    const fileType = unloadFileTypeList.includes(file.type);
     if (!fileType) {
       message.error('图片类型有误,请上传jpg/png/svg/jpeg/webp格式!');
     }
@@ -186,25 +185,287 @@ const UserInfo: React.FC = () => {
         // @ts-ignore
         uid: loginUser?.userAccount,
         // @ts-ignore
-        name:  "error",
-        status: "error",
-        percent: 100
-      }
+        name: 'error',
+        status: 'error',
+        percent: 100,
+      };
       setFileList(updatedFileList);
-      return false
+      return false;
     }
     return fileType && isLt2M;
   };
 
   const updateVoucher = async () => {
-    setVoucherLoading(true)
+    setVoucherLoading(true);
     const res = await updateVoucherUsingPOST();
     if (res.data && res.code === 0) {
-      setInitialState({loginUser: res.data, settings: Settings})
+      setInitialState({ loginUser: res.data, settings: Settings });
       setTimeout(() => {
         message.success(`凭证更新成功`);
-        setVoucherLoading(false)
+        setVoucherLoading(false);
       }, 800);
     }
-  }
+  };
+
+  const updateUserInfo = async () => {
+    let avatarUrl = '';
+    if (fileList && fileList[0] && valueLength(fileList[0].url)) {
+      // @ts-ignore
+      avatarUrl = fileList[0].url;
+    }
+    const res = await updateUserUsingPOST({
+      userAvatar: avatarUrl,
+      id: loginUser?.id,
+      userName: userName,
+    });
+    if (res.data && res.code === 0) {
+      setInitialState({ loginUser: res.data, settings: Settings });
+      message.success('信息更新成功');
+    }
+  };
+
+  const props: UploadProps = {
+    name: 'file',
+    withCredentials: true,
+    action: `${errorConfig.baseURL}api/file/upload?biz=user_avatar`,
+    onChange: async function ({ file, fileList: newFileList }) {
+      const { response } = file;
+      if (file.response && response.data) {
+        const {
+          data: { status, url },
+        } = response;
+        const updatedFileList = [...fileList];
+        if (response.code !== 0 || status === 'error') {
+          message.error(response.message);
+          file.status = 'error';
+          updatedFileList[0] = {
+            // @ts-ignore
+            uid: loginUser?.userAccount,
+            name: loginUser?.userAvatar
+              ? loginUser?.userAvatar?.substring(loginUser?.userAvatar!.lastIndexOf('-') + 1)
+              : 'error',
+            status: 'error',
+            percent: 100,
+          };
+          setFileList(updatedFileList);
+          return;
+        }
+        file.status = status;
+        updatedFileList[0] = {
+          // @ts-ignore
+          uid: loginUser?.userAccount,
+          // @ts-ignore
+          name: loginUser?.userAvatar?.substring(loginUser?.userAvatar!.lastIndexOf('-') + 1),
+          status: status,
+          url: url,
+          percent: 100,
+        };
+        setFileList(updatedFileList);
+      } else {
+        setFileList(newFileList);
+      }
+    },
+    listType: 'picture-circle',
+    onPreview: handlePreview,
+    fileList: fileList,
+    beforeUpload: beforeUpload,
+    maxCount: 1,
+    progress: {
+      strokeColor: {
+        '0%': '#108ee9',
+        '100%': '#87d068',
+      },
+      strokeWidth: 3,
+      format: (percent) => percent && `${parseFloat(percent.toFixed(2))}%`,
+    },
+  };
+
+  const handleBindEmailSubmit = async (values: API.UserBindEmailRequest) => {
+    try {
+      const res = await userBindEmailUsingPOST({
+        ...values,
+      });
+      if (res.data && res.code === 0) {
+        if (initialState?.settings.navTheme === 'light') {
+          setInitialState({ loginUser: res.data, settings: { ...Settings, navTheme: 'light' } });
+        } else {
+          setInitialState({ loginUser: res.data, settings: { ...Settings, navTheme: 'realDark' } });
+        }
+        setOpenEmailModal(false);
+        message.success('绑定成功');
+      }
+    } catch (error) {
+      const defaultLoginFailureMessage = '操作失败';
+      message.error(defaultLoginFailureMessage);
+    }
+  };
+  const handleUnBindEmailSubmit = async (values: API.UserUnBindEmailRequest) => {
+    try {
+      // 绑定邮箱
+      const res = await userUnBindEmailUsingPOST({ ...values });
+      if (res.data && res.code === 0) {
+        if (initialState?.settings.navTheme === 'light') {
+          setInitialState({ loginUser: res.data, settings: { ...Settings, navTheme: 'light' } });
+        } else {
+          setInitialState({ loginUser: res.data, settings: { ...Settings, navTheme: 'realDark' } });
+        }
+        setOpenEmailModal(false);
+        message.success('解绑成功');
+      }
+    } catch (error) {
+      const defaultLoginFailureMessage = '操作失败！';
+      message.error(defaultLoginFailureMessage);
+    }
+  };
+  return (
+    <Spin spinning={loading}>
+      <ProCard type="inner" bordered direction="column">
+        <ProCard
+          ref={ref1}
+          extra={
+            <>
+              <Tooltip title={'用于接收订单信息'}>
+                <Button
+                  onClick={() => {
+                    setOpenEmailModal(true);
+                  }}
+                >
+                  {loginUser?.email ? '更新邮箱' : '绑定邮箱'}
+                </Button>
+              </Tooltip>
+              <Tooltip title={'提交修改的信息'}>
+                <Button style={{ marginLeft: 10 }} onClick={updateUserInfo}>
+                  提交更改
+                </Button>
+              </Tooltip>
+            </>
+          }
+          title={<strong>个人信息设置</strong>}
+          type="inner"
+          bordered
+        >
+          <Descriptions.Item>
+            <ImgCrop
+              rotationSlider
+              quality={1}
+              aspectSlider
+              maxZoom={4}
+              cropShape={'round'}
+              zoomSlider
+              showReset
+            >
+              <Upload {...props}>{fileList.length >= 1 ? undefined : uploadButton()}</Upload>
+            </ImgCrop>
+            <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+              <img alt="example" style={{ width: '100%' }} src={previewImage} />
+            </Modal>
+          </Descriptions.Item>
+          <Descriptions column={1}>
+            <div>
+              <h4>昵称：</h4>
+              <Paragraph
+                editable={{
+                  icon: <EditOutlined />,
+                  tooltip: '编辑',
+                  onChange: (value) => {
+                    setUserName(value);
+                  },
+                }}
+              >
+                {valueLength(userName) ? userName : '默认名称'}
+              </Paragraph>
+            </div>
+            <div>
+              {/*<Tooltip title={"邀请好友注册双方都可获得100积分"}>*/}
+              {/*  <h4>我的邀请码：</h4>*/}
+              {/*</Tooltip>*/}
+              <Paragraph copyable={valueLength(loginUser?.invitationCode)}>
+                {loginUser?.invitationCode}
+              </Paragraph>
+            </div>
+            <div>
+              <h4>我的id：</h4>
+              <Paragraph
+              // copyable={valueLength(loginUser?.id)}
+              >
+                {loginUser?.id}
+              </Paragraph>
+            </div>
+            <div>
+              <h4>我的邮箱：</h4>
+              <Paragraph copyable={valueLength(loginUser?.email)}>
+                {valueLength(loginUser?.email) ? loginUser?.email : '未绑定邮箱'}
+              </Paragraph>
+            </div>
+          </Descriptions>
+        </ProCard>
+        <br />
+        <ProCard
+          ref={ref3}
+          bordered
+          type="inner"
+          title={'开发者凭证'}
+          extra={
+            <Button loading={voucherLoading} onClick={updateVoucher}>
+              {loginUser?.accessKey && loginUser?.accessKey ? '更新' : '生成'}凭证
+            </Button>
+          }
+        >
+          {loginUser?.accessKey && loginUser?.secretKey ? (
+            <Descriptions column={1}>
+              <Descriptions.Item label={'AccessKey'}>
+                <Paragraph copyable={valueLength(loginUser?.accessKey)}>
+                  {loginUser?.accessKey}
+                </Paragraph>
+              </Descriptions.Item>
+              <Descriptions.Item label={'SecretKey'}>
+                <Paragraph copyable={valueLength(loginUser?.secretKey)}>
+                  {loginUser?.secretKey}
+                </Paragraph>
+              </Descriptions.Item>
+            </Descriptions>
+          ) : (
+            '暂无凭证，请先生成凭证'
+          )}
+        </ProCard>
+        <br />
+        <ProCard
+          ref={ref4}
+          type="inner"
+          title={<strong>开发者 SDK 快速接入API接口</strong>}
+          bordered
+        >
+          <Button size="large">
+            <a target={'_blank'} href={'#'} rel="noreferrer">
+              <VerticalAlignBottomOutlined /> Java SDK
+            </a>
+          </Button>
+        </ProCard>
+      </ProCard>
+      <SendGiftModal
+        invitationCode={loginUser?.invitationCode}
+        onCancel={() => {
+          setOpen(false);
+        }}
+        open={open}
+      />
+      <EmailModal
+        unbindSubmit={handleUnBindEmailSubmit}
+        bindSubmit={handleBindEmailSubmit}
+        data={loginUser}
+        onCancel={() => {
+          setOpenEmailModal(false);
+        }}
+        open={openEmailModal}
+      />
+      <Tour
+        open={openTour}
+        onClose={() => {
+          setOpenTour(false);
+          localStorage.setItem('tour', 'true');
+        }}
+        steps={steps}
+      />
+    </Spin>
+  );
 };

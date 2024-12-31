@@ -20,6 +20,9 @@ importers:
       antd:
         specifier: ^5.13.2
         version: 5.13.2(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      antd-img-crop:
+        specifier: ^4.24.0
+        version: 4.24.0(antd@5.13.2(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       antd-style:
         specifier: ^3.6.1
         version: 3.6.1(@types/react@18.2.48)(antd@5.13.2(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -2953,6 +2956,13 @@ packages:
     resolution: {integrity: sha512-UlK3BfA0iE2c5+Zz/Bd2iPAkT6cICtrKG4/swSik5MZweBHtgmu1aUQCHvICdiv39EAShdZy/edfP6mlkS/xXg==}
     peerDependencies:
       dayjs: '*'
+
+  antd-img-crop@4.24.0:
+    resolution: {integrity: sha512-RqY/XqvmUnHlj7oLV2kN/ytdZdHUFAZyM3TN+QlTlLrze1Q74isAePgG+QTkLAbrkR9L/IgVRpjsuH/nevpU7Q==}
+    peerDependencies:
+      antd: '>=4.0.0'
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
 
   antd-mobile-alita@2.3.4:
     resolution: {integrity: sha512-MlCFwuXQRAzifBEuhari4Jf9nbvsiyrm7HJvoGVMkjXKXk8PaaTJL6hTo7UwI3uD/CFeTxhW9X27Z8sd65J4fw==}
@@ -6775,6 +6785,9 @@ packages:
     resolution: {integrity: sha512-9UZCFRHQdNrfTpGg8+1INIg93B6zE0aXMVFkw1WFwvO4SlZywU6aLg5Of0Ap/PgcbSw4LNxvMWXMeugwMCX0AA==}
     engines: {node: '>=8'}
 
+  normalize-wheel@1.0.1:
+    resolution: {integrity: sha512-1OnlAPZ3zgrk8B91HyRj+eVv+kS5u+Z0SCsak6Xil/kmgEia50ga7zfkumayonZrImffAxPU/5WcyGhzetHNPA==}
+
   normalize.css@7.0.0:
     resolution: {integrity: sha512-LYaFZxj2Q1Q9e1VJ0f6laG46Rt5s9URhKyckNaA2vZnL/0gwQHWhM7ALQkp3WBQKM5sXRLQ5Ehrfkp+E/ZiCRg==}
 
@@ -8304,6 +8317,12 @@ packages:
     peerDependencies:
       react: ^18.2.0
 
+  react-easy-crop@5.2.0:
+    resolution: {integrity: sha512-gjb7jN+WnwfgpbNUI2jSwyoIxF1sJ0PVSNVgEysAgF1rj8AqR75fqmdvqZ6PFVgEX3rT1G4HJELesiQXr2ZvAg==}
+    peerDependencies:
+      react: '>=16.4.0'
+      react-dom: '>=16.4.0'
+
   react-error-overlay@6.0.11:
     resolution: {integrity: sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==}
 
@@ -9602,6 +9621,9 @@ packages:
 
   tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+
+  tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
   tsutils@3.21.0:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -14847,6 +14869,14 @@ snapshots:
     dependencies:
       dayjs: 1.11.10
 
+  antd-img-crop@4.24.0(antd@5.13.2(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      antd: 5.13.2(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-easy-crop: 5.2.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      tslib: 2.8.1
+
   antd-mobile-alita@2.3.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       array-tree-filter: 2.1.0
@@ -19888,6 +19918,8 @@ snapshots:
 
   normalize-url@4.5.1: {}
 
+  normalize-wheel@1.0.1: {}
+
   normalize.css@7.0.0: {}
 
   npm-bundled@1.1.2:
@@ -21805,6 +21837,13 @@ snapshots:
       react: 18.2.0
       scheduler: 0.23.0
 
+  react-easy-crop@5.2.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      normalize-wheel: 1.0.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      tslib: 2.8.1
+
   react-error-overlay@6.0.11: {}
 
   react-error-overlay@6.0.9: {}
@@ -23454,6 +23493,8 @@ snapshots:
   tslib@1.14.1: {}
 
   tslib@2.6.2: {}
+
+  tslib@2.8.1: {}
 
   tsutils@3.21.0(typescript@4.9.5):
     dependencies:
