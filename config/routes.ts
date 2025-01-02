@@ -55,6 +55,18 @@ export default [
         path: '/admin/interface/list',
         component: './Admin/InterfaceInfoList',
       },
+      {
+        name: '商品管理',
+        icon: 'table',
+        path: '/admin/productInfo/list',
+        component: './Admin/ProductInfoList',
+      },
+      {
+        name: '用户管理',
+        icon: 'TeamOutlined',
+        path: '/admin/user/list',
+        component: './Admin/UserList',
+      },
     ],
   },
   {

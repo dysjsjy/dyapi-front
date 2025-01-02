@@ -17,6 +17,7 @@ export type Props = {
   size?: SizeType
 };
 
+//一个自定义便捷提交表单组件
 const ModalForm: React.FC<Props> = (props) => {
   const formRef = useRef<FormInstance>();
   const {width, open, onOpenChange, title, value, onSubmit, columns, size} = props;
