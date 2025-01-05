@@ -77,6 +77,13 @@ export default [
     hideInMenu: true,
   },
   {
+    path: '/order/info/:id',
+    icon: 'ProfileOutlined',
+    name: '订单详情',
+    component: './Order/OrderInfo',
+    hideInMenu: true,
+  },
+  {
     path: '/account/center',
     name: '个人中心',
     icon: 'UserOutlined',
