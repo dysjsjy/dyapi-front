@@ -70,10 +70,11 @@ export default [
     ],
   },
   {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
+    path: '/order/pay/:id',
+    icon: 'PayCircleOutlined',
+    name: '订单支付',
+    component: './Order/PayOrder',
+    hideInMenu: true,
   },
   {
     path: '/account/center',
